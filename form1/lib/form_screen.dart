@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/cupertino.dart';
 import 'personal.dart';
 import 'package:marquee/marquee.dart';
+import 'doc1.dart';
+import 'doc2.dart';
+import 'doc3.dart';
+import 'doc4.dart';
 
 class FormScreen extends StatefulWidget {
   const FormScreen({Key? key}) : super(key: key);
@@ -37,6 +39,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
   var format = DateFormat("yyyy-MM-dd");
   String? birthDateInString;
   DateTime? birthDate;
+
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   Widget _buildNameField() {
     return Padding(
@@ -332,7 +335,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                     blankSpace: 200,
 
                     velocity: 150,
-                    textScaleFactor: 1.11,
+                    textScaleFactor: 1.06,
                     pauseAfterRound: Duration(seconds: 1),
                     showFadingOnlyWhenScrolling: true,
                     //fadingEdgeStartFraction: 0.1,
@@ -414,7 +417,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
               ),
               Container(
                 width: double.maxFinite,
-                height: 950,
+                height: 960,
                 child: TabBarView(controller: _tabcontroller, children: [
                   Container(
                     margin: EdgeInsets.all(24),
@@ -450,23 +453,21 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                           ],
                         )),
                   ),
+                  //2ND TAB BAR
                   Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Center(
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15, bottom: 30),
                         child: Text(
-                          "UPLOAD DOCUMENTS",
-                          style: TextStyle(fontSize: 20),
+                          " UPLOAD REQUIRED DOCUMENTS",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 17),
                         ),
                       ),
-                      ElevatedButton(
-                          onPressed: null,
-                          child: Text("Upload",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 16)),
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.teal))),
+                      Document1(),
+                      Document2(),
+                      Document3(),
+                      Document4()
                     ],
                   ),
                   Center(
