@@ -50,7 +50,7 @@ class _Document2State extends State<Document2> with TickerProviderStateMixin {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 17),
-          child: Text("3.  Adhaar Card :"),
+          child: Text("2.  Adhaar Card :"),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 15),

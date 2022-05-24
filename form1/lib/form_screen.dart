@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form1/preferences_services.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'personal.dart';
@@ -16,8 +17,52 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
-  gender? _character = gender.Male;
-  List listitem = [
+  final _preferencesService = PreferencesServices();
+
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _numberController = TextEditingController();
+  final _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _popularfield();
+  }
+
+  void _popularfield() async {
+    final Savedata = await _preferencesService.getSavedata();
+    setState(() {
+      listitem = Savedata.post;
+      _usernameController.text = Savedata.username;
+      _emailController.text = Savedata.email;
+      _passwordController.text = Savedata.password;
+      _numberController.text = Savedata.phonenumber;
+      _addressController.text = Savedata.address;
+      listitem2 = Savedata.qualification;
+      _character = Savedata.gen;
+    });
+  }
+
+  void _savenew() {
+    final newSave = Savedata(
+      post: listitem,
+      username: _usernameController.text,
+      email: _emailController.text,
+      password: _passwordController.text,
+      phonenumber: _numberController.text,
+      address: _addressController.text,
+      qualification: listitem2,
+      gen: _character,
+    );
+
+    print(newSave);
+    _preferencesService.finalsave(newSave);
+  }
+
+  gender _character = gender.Male;
+  List<String> listitem = [
     'App Developer',
     'Website developer',
     'Graphic Designer',
@@ -25,7 +70,14 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     'Other'
   ];
   String? itemvalue;
-  List listitem2 = ['BCA', 'B.TECH', 'MCA', 'MSC IT', 'M.TECH', 'OTHER'];
+  List<String> listitem2 = [
+    'BCA',
+    'B.TECH',
+    'MCA',
+    'MSC IT',
+    'M.TECH',
+    'OTHER'
+  ];
   String? itemvalue2;
 
   var _currentItemSelected = 'App Developer';
@@ -37,7 +89,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
   var _qualification = '';
   var _age = '';
   var format = DateFormat("yyyy-MM-dd");
-  String? birthDateInString;
+
   DateTime? birthDate;
 
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -47,6 +99,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
         bottom: 10,
       ),
       child: TextFormField(
+          controller: _usernameController,
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -61,6 +114,10 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
             if (value == null || value.isEmpty) {
               return 'Name is required';
             }
+            if (!RegExp(r"^\s*([A-Za-z]{1,}([\.,] |[-']| ))+[A-Za-z]+\.?\s*$")
+                .hasMatch(value)) {
+              return "Please Enter a Valid Name";
+            }
           },
           onSaved: (value) {
             _name = 'value';
@@ -72,6 +129,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextFormField(
+          controller: _emailController,
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -102,6 +160,8 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextFormField(
+          controller: _passwordController,
+          obscureText: true,
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -127,6 +187,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: TextFormField(
+          controller: _numberController,
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -153,6 +214,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
 
   Widget _buildAddress() {
     return TextFormField(
+        controller: _addressController,
         decoration: InputDecoration(
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
             labelText: 'Address',
@@ -285,7 +347,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
             groupValue: _character,
             onChanged: (value) {
               setState(() {
-                _character = value as gender?;
+                _character = value as gender;
               });
             }),
         RadioListTile(
@@ -294,7 +356,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
             groupValue: _character,
             onChanged: (value) {
               setState(() {
-                _character = value as gender?;
+                _character = value as gender;
               });
             }),
         RadioListTile(
@@ -303,7 +365,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
             groupValue: _character,
             onChanged: (value) {
               setState(() {
-                _character = value as gender?;
+                _character = value as gender;
               });
             }),
       ],
@@ -437,12 +499,17 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                             SizedBox(
                               height: 100,
                             ),
+                            TextButton(
+                                onPressed: _savenew, child: Text("Save")),
                             ElevatedButton(
                                 onPressed: () => {
                                       if (_formkey.currentState!.validate())
-                                        {}
+                                        {
+                                          _tabcontroller.index = 1,
+                                        }
                                       else
                                         _formkey.currentState!.save(),
+                                      _savenew(),
                                       print("Saved Succesfully")
                                     },
                                 child: Text(

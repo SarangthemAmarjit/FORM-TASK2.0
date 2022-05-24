@@ -15,6 +15,7 @@ class _Document1State extends State<Document3> with TickerProviderStateMixin {
   PlatformFile? file;
   File? filetodisplay;
   bool isloading = false;
+  String? filepath;
   void _openfile() async {
     try {
       setState(() {
