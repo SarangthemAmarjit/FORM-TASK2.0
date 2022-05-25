@@ -80,6 +80,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     'M.TECH',
     'OTHER'
   ];
+  String st = 'Click Save Button To Save Form Data';
 
   var _currentItemSelected = 'App Developer';
   var _name = '';
@@ -500,6 +501,12 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                             SizedBox(
                               height: 100,
                             ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 15),
+                              child: Text(st,
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 17)),
+                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -513,7 +520,12 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                                           end: Alignment.topCenter,
                                           colors: [Colors.blue, Colors.red])),
                                   child: TextButton(
-                                      onPressed: _savenew,
+                                      onPressed: () {
+                                        _savenew();
+                                        setState(() {
+                                          st = 'Data Saved Successfully';
+                                        });
+                                      },
                                       child: Text(
                                         "Save",
                                         style: TextStyle(color: Colors.white),
