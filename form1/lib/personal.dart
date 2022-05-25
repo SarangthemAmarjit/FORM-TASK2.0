@@ -1,13 +1,13 @@
 enum gender { Male, Female, Other }
 
 class Savedata {
-  final List<String> post;
+  final String post;
   final String username;
   final String email;
   final String password;
   final String phonenumber;
   final String address;
-  final List<String> qualification;
+  final String qualification;
 
   final gender gen;
 

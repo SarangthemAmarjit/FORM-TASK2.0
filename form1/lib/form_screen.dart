@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:form1/preferences_services.dart';
 import 'package:intl/intl.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'personal.dart';
 import 'package:marquee/marquee.dart';
 import 'doc1.dart';
@@ -34,26 +35,26 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
   void _popularfield() async {
     final Savedata = await _preferencesService.getSavedata();
     setState(() {
-      listitem = Savedata.post;
+      itemvalue = Savedata.post;
       _usernameController.text = Savedata.username;
       _emailController.text = Savedata.email;
       _passwordController.text = Savedata.password;
       _numberController.text = Savedata.phonenumber;
       _addressController.text = Savedata.address;
-      listitem2 = Savedata.qualification;
+      itemvalue2 = Savedata.qualification;
       _character = Savedata.gen;
     });
   }
 
   void _savenew() {
     final newSave = Savedata(
-      post: listitem,
+      post: itemvalue ?? '',
       username: _usernameController.text,
       email: _emailController.text,
       password: _passwordController.text,
       phonenumber: _numberController.text,
       address: _addressController.text,
-      qualification: listitem2,
+      qualification: itemvalue2 ?? '',
       gen: _character,
     );
 
@@ -70,6 +71,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     'Other'
   ];
   String? itemvalue;
+  String? itemvalue2;
   List<String> listitem2 = [
     'BCA',
     'B.TECH',
@@ -78,7 +80,6 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
     'M.TECH',
     'OTHER'
   ];
-  String? itemvalue2;
 
   var _currentItemSelected = 'App Developer';
   var _name = '';
@@ -251,14 +252,14 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
         DropdownButtonHideUnderline(
           child: Padding(
             padding: const EdgeInsets.only(left: 10),
-            child: DropdownButton(
+            child: DropdownButton<String>(
               value: itemvalue2,
               hint: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Text("Select"),
               ),
               items: listitem2.map((item2) {
-                return DropdownMenuItem(
+                return DropdownMenuItem<String>(
                   value: item2,
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10),
@@ -266,9 +267,9 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                   ),
                 );
               }).toList(),
-              onChanged: (newchange1) {
+              onChanged: (String? newchange1) {
                 setState(() {
-                  itemvalue2 = newchange1 as String?;
+                  itemvalue2 = newchange1!;
                 });
               },
             ),
@@ -435,14 +436,14 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                       child: DropdownButtonHideUnderline(
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10, bottom: 10),
-                          child: DropdownButton(
+                          child: DropdownButton<String>(
                             value: itemvalue,
                             hint: Padding(
                               padding: const EdgeInsets.only(left: 10),
                               child: Text("Select Your Post"),
                             ),
                             items: listitem.map((item) {
-                              return DropdownMenuItem(
+                              return DropdownMenuItem<String>(
                                 value: item,
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 10),
@@ -450,9 +451,9 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                                 ),
                               );
                             }).toList(),
-                            onChanged: (newchange) {
+                            onChanged: (String? newchange) {
                               setState(() {
-                                itemvalue = newchange as String?;
+                                itemvalue = newchange!;
                               });
                             },
                           ),
@@ -479,7 +480,7 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
               ),
               Container(
                 width: double.maxFinite,
-                height: 960,
+                height: 1000,
                 child: TabBarView(controller: _tabcontroller, children: [
                   Container(
                     margin: EdgeInsets.all(24),
@@ -499,24 +500,43 @@ class _FormScreenState extends State<FormScreen> with TickerProviderStateMixin {
                             SizedBox(
                               height: 100,
                             ),
-                            TextButton(
-                                onPressed: _savenew, child: Text("Save")),
-                            ElevatedButton(
-                                onPressed: () => {
-                                      if (_formkey.currentState!.validate())
-                                        {
-                                          _tabcontroller.index = 1,
-                                        }
-                                      else
-                                        _formkey.currentState!.save(),
-                                      _savenew(),
-                                      print("Saved Succesfully")
-                                    },
-                                child: Text(
-                                  'Next',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ))
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  width: 70,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [Colors.blue, Colors.red])),
+                                  child: TextButton(
+                                      onPressed: _savenew,
+                                      child: Text(
+                                        "Save",
+                                        style: TextStyle(color: Colors.white),
+                                      )),
+                                ),
+                                ElevatedButton(
+                                    onPressed: () => {
+                                          if (_formkey.currentState!.validate())
+                                            {
+                                              _tabcontroller.index = 1,
+                                            }
+                                          else
+                                            _formkey.currentState!.save(),
+                                          _savenew(),
+                                          print("Saved Succesfully")
+                                        },
+                                    child: Text(
+                                      'Next',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                    ))
+                              ],
+                            ),
                           ],
                         )),
                   ),
